@@ -27,7 +27,7 @@
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         header h1 {
@@ -39,72 +39,32 @@
         header p {
             color: #747d8c;
             font-style: italic;
+            margin-bottom: 15px;
         }
 
-        /* Form Stilleri */
-        .form-card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.1);
-            margin-bottom: 35px;
+        .action-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
         }
 
-        .form-card h2 {
-            margin-top: 0;
-            color: var(--primary);
-            font-size: 1.4rem;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .full-width {
-            grid-column: span 2;
-        }
-
-        label {
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #dfe4ea;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 0.95rem;
-        }
-
-        textarea {
-            resize: vertical;
-            height: 70px;
-        }
-
-        button.add-btn {
-            background: var(--primary);
+        .btn-add {
+            background-color: var(--primary);
             color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 1rem;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 25px;
             font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.2s;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+            transition: transform 0.2s, background 0.2s;
         }
 
-        button.add-btn:hover {
-            background: #e84118;
+        .btn-add:hover {
+            transform: translateY(-2px);
+            background-color: #e84118;
         }
 
-        /* Restoran Kartları Grid */
         .restaurant-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -118,7 +78,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
-            position: relative;
         }
 
         .res-image {
@@ -140,7 +99,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .res-title {
@@ -152,9 +111,9 @@
         .res-date {
             font-size: 0.8rem;
             color: #a4b0be;
+            margin-bottom: 10px;
         }
 
-        /* Puan Çubukları / Yıldızlar */
         .ratings {
             background: #f8f9fa;
             padding: 10px;
@@ -169,10 +128,6 @@
             margin-bottom: 4px;
         }
 
-        .rating-row:last-child {
-            margin-bottom: 0;
-        }
-
         .average-badge {
             background: #ffa502;
             color: white;
@@ -185,24 +140,16 @@
         .notes {
             font-size: 0.88rem;
             color: #57606f;
-            margin-top: 5px;
+            margin-top: 8px;
             font-style: italic;
         }
 
-        .delete-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            align-self: flex-end;
-            margin-top: 10px;
-        }
-
-        .delete-btn:hover {
-            background: #ee5253;
+        .loading-text {
+            text-align: center;
+            color: #747d8c;
+            grid-column: 1 / -1;
+            font-size: 1.1rem;
+            padding: 40px 0;
         }
     </style>
 </head>
@@ -211,131 +158,96 @@
 <div class="container">
     <header>
         <h1>Lezzet & Anı Günlüğümüz 🍕❤️</h1>
-        <p>Birlikte keşfettiğimiz mekânlar ve puanlarımız</p>
+        <p>Birlikte keşfettiğimiz mekânlar ve ortak puanlarımız</p>
     </header>
 
-    <!-- Mekan Ekleme Formu -->
-    <div class="form-card">
-        <h2>Yeni Bir Mekân Ekle</h2>
-        <form id="resForm">
-            <div class="form-grid">
-                <div>
-                    <label>Mekân Adı:</label>
-                    <input type="text" id="name" placeholder="Örn: Kebapçı İskender" required>
-                </div>
-                <div>
-                    <label>Gittiğimiz Tarih:</label>
-                    <input type="date" id="date" required>
-                </div>
-                <div>
-                    <label>Yemek Puanı (1-10):</label>
-                    <input type="number" id="foodRating" min="1" max="10" placeholder="10" required>
-                </div>
-                <div>
-                    <label>Servis Puanı (1-10):</label>
-                    <input type="number" id="serviceRating" min="1" max="10" placeholder="10" required>
-                </div>
-                <div>
-                    <label>Ortam / Atmosfer Puanı (1-10):</label>
-                    <input type="number" id="ambianceRating" min="1" max="10" placeholder="10" required>
-                </div>
-                <div>
-                    <label>Fotoğraf Linki (URL):</label>
-                    <input type="url" id="image" placeholder="https://... (boş bırakabilirsiniz)">
-                </div>
-                <div class="full-width">
-                    <label>Özel Notlarımız / Favori Yemeğimiz:</label>
-                    <textarea id="notes" placeholder="Örn: Mantısı harikaydı, bahçede oturduk..."></textarea>
-                </div>
-                <div class="full-width">
-                    <button type="submit" class="add-btn">Mekânı Günlüğe Kaydet 📌</button>
-                </div>
-            </div>
-        </form>
+    <div class="action-bar">
+        <!-- Google Form Linkinizi Tırnak İçine Yapıştırın -->
+        <a href="BURAYA_GOOGLE_FORM_LINKINIZI_YAPIŞTIRIN" target="_blank" class="btn-add">
+            ➕ Yeni Mekân Ekle (Google Form)
+        </a>
     </div>
 
-    <!-- Eklenen Restoranlar -->
-    <div id="restaurantList" class="restaurant-grid"></div>
+    <div id="restaurantList" class="restaurant-grid">
+        <div class="loading-text">Google Sheets verileri yükleniyor... 🔄</div>
+    </div>
 </div>
 
 <script>
-    let restaurants = JSON.parse(localStorage.getItem('ourRestaurants')) || [];
+    // Google Sheets CSV Yayın Linkiniz
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTW3LB7dGi-ptuSQYvXvUd5jJ5E8W16MOVfunkiGdshfQFm85c3uGtDt2-zcPDxCdEbQcbFBLx3t7iE/pub?output=csv';
+    const defaultImg = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=80';
 
-    const resForm = document.getElementById('resForm');
-    const restaurantList = document.getElementById('restaurantList');
-
-    // Varsayılan Görsel
-    const defaultImg = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=80";
-
-    function renderRestaurants() {
-        restaurantList.innerHTML = '';
-
-        if (restaurants.length === 0) {
-            restaurantList.innerHTML = '<p style="grid-column: span 3; text-align:center; color:#a4b0be;">Henüz bir mekân eklemediniz. Yukarıdaki formdan ilk anınızı ekleyin!</p>';
-            return;
-        }
-
-        restaurants.forEach((res, index) => {
-            const avg = ((parseFloat(res.food) + parseFloat(res.service) + parseFloat(res.ambiance)) / 3).toFixed(1);
-            
-            const card = document.createElement('div');
-            card.className = 'res-card';
-            card.innerHTML = `
-                <img src="${res.image || defaultImg}" class="res-image" alt="${res.name}" onerror="this.src='${defaultImg}'">
-                <div class="res-content">
-                    <div>
-                        <div class="res-header">
-                            <h3 class="res-title">${res.name}</h3>
-                            <span class="average-badge">★ ${avg}</span>
-                        </div>
-                        <div class="res-date">📅 ${res.date}</div>
-                        
-                        <div class="ratings">
-                            <div class="rating-row"><span>🍕 Yemek:</span> <strong>${res.food}/10</strong></div>
-                            <div class="rating-row"><span>🛎️ Servis:</span> <strong>${res.service}/10</strong></div>
-                            <div class="rating-row"><span>✨ Ortam:</span> <strong>${res.ambiance}/10</strong></div>
-                        </div>
-
-                        ${res.notes ? `<div class="notes">"${res.notes}"</div>` : ''}
-                    </div>
-                    <button class="delete-btn" onclick="deleteRestaurant(${index})">Sil</button>
-                </div>
-            `;
-            restaurantList.appendChild(card);
+    // CSV Formatını Parçalama Fonksiyonu
+    function parseCSV(text) {
+        const lines = text.trim().split('\n');
+        return lines.slice(1).map(line => {
+            // Tırnak içerisindeki virgülleri koruyarak parçalama
+            const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
+            return values.map(val => val.replace(/^"|"$/g, '').trim());
         });
     }
 
-    resForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+    async function loadData() {
+        const listElement = document.getElementById('restaurantList');
+        try {
+            const response = await fetch(csvUrl);
+            const dataText = await response.text();
+            const rows = parseCSV(dataText);
 
-        const newRes = {
-            name: document.getElementById('name').value,
-            date: document.getElementById('date').value,
-            food: document.getElementById('foodRating').value,
-            service: document.getElementById('serviceRating').value,
-            ambiance: document.getElementById('ambianceRating').value,
-            image: document.getElementById('image').value,
-            notes: document.getElementById('notes').value
-        };
+            listElement.innerHTML = '';
 
-        restaurants.unshift(newRes); // En yeni eklenen en üstte görünsün
-        localStorage.setItem('ourRestaurants', JSON.stringify(restaurants));
+            if (rows.length === 0 || (rows.length === 1 && !rows[0][1])) {
+                listElement.innerHTML = '<div class="loading-text">Henüz kaydedilmiş bir mekân yok. İlk mekânı yukarıdaki butondan ekleyin!</div>';
+                return;
+            }
 
-        resForm.reset();
-        renderRestaurants();
-    });
+            // En son eklenen en üstte görünsün diye ters çeviriyoruz
+            rows.reverse().forEach(row => {
+                // Kolon Sıralaması: Timestamp(0), Mekan Adı(1), Tarih(2), Yemek(3), Servis(4), Ortam(5), Görsel(6), Notlar(7)
+                const name = row[1] || 'İsimsiz Mekân';
+                const date = row[2] || '';
+                const food = parseFloat(row[3]) || 0;
+                const service = parseFloat(row[4]) || 0;
+                const ambiance = parseFloat(row[5]) || 0;
+                const image = row[6] || defaultImg;
+                const notes = row[7] || '';
 
-    function deleteRestaurant(index) {
-        if(confirm("Bu mekanı silmek istediğinize emin misiniz?")) {
-            restaurants.splice(index, 1);
-            localStorage.setItem('ourRestaurants', JSON.stringify(restaurants));
-            renderRestaurants();
+                const avg = ((food + service + ambiance) / 3).toFixed(1);
+
+                const card = document.createElement('div');
+                card.className = 'res-card';
+                card.innerHTML = `
+                    <img src="${image}" class="res-image" alt="${name}" onerror="this.src='${defaultImg}'">
+                    <div class="res-content">
+                        <div>
+                            <div class="res-header">
+                                <h3 class="res-title">${name}</h3>
+                                <span class="average-badge">★ ${isNaN(avg) ? '0.0' : avg}</span>
+                            </div>
+                            <div class="res-date">📅 ${date}</div>
+                            
+                            <div class="ratings">
+                                <div class="rating-row"><span>🍕 Yemek:</span> <strong>${food}/10</strong></div>
+                                <div class="rating-row"><span>🛎️ Servis:</span> <strong>${service}/10</strong></div>
+                                <div class="rating-row"><span>✨ Ortam:</span> <strong>${ambiance}/10</strong></div>
+                            </div>
+
+                            ${notes ? `<div class="notes">"${notes}"</div>` : ''}
+                        </div>
+                    </div>
+                `;
+                listElement.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error('Hata:', error);
+            listElement.innerHTML = '<div class="loading-text">Veriler yüklenirken bir hata oluştu. Lütfen CSV yayın linkini kontrol edin.</div>';
         }
     }
 
-    // Başlangıçta tarihi bugün yap
-    document.getElementById('date').valueAsDate = new Date();
-    renderRestaurants();
+    // Sayfa açıldığında verileri çek
+    loadData();
 </script>
 
 </body>
