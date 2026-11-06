@@ -1,12 +1,165 @@
-HTML
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Web Sitem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araba Değerlendirme Sitesi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #eef2f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .car-list {
+            display: grid;
+            gap: 15px;
+        }
+        .car-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .car-info h3 {
+            margin: 0 0 5px 0;
+            color: #007bff;
+        }
+        .car-info p {
+            margin: 3px 0;
+            color: #555;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            padding: 8: 12px;
+            font-size: 14px;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
-    <h1>Merhaba Dünya! Sitem yayında 🎉</h1>
-    <p>Bu benim ilk web sitem.</p>
+
+<div class="container">
+    <h1>Araba Takip ve Değerlendirme</h1>
+
+    <!-- Araba Ekleme Formu -->
+    <form id="carForm">
+        <h2>Yeni Araba Ekle</h2>
+        <input type="text" id="carModel" placeholder="Araba Modeli (Örn: BMW M4)" required>
+        <input type="text" id="carSpeed" placeholder="Hız / Beygir (Örn: 300 km/s - 500 HP)" required>
+        <input type="text" id="carComfort" placeholder="Konfor Puanı / Özelliği (Örn: 9/10 - Deri Koltuk)" required>
+        <input type="number" id="carYear" placeholder="Üretim Yılı (Örn: 2024)" required>
+        <button type="submit">Aracı Listeye Ekle</button>
+    </form>
+
+    <!-- Kayıtlı Arabalar Listesi -->
+    <h2>Eklenen Arabalar</h2>
+    <div id="carList" class="car-list">
+        <!-- JavaScript buraya otomatik araba kartları ekleyecek -->
+    </div>
+</div>
+
+<script>
+    // Sayfa açıldığında hafızadaki kayıtlı arabaları al
+    let cars = JSON.parse(localStorage.getItem('savedCars')) || [];
+
+    const carForm = document.getElementById('carForm');
+    const carList = document.getElementById('carList');
+
+    // Listeyi ekrana yazdıran fonksiyon
+    function renderCars() {
+        carList.innerHTML = '';
+        if (cars.length === 0) {
+            carList.innerHTML = '<p style="text-align:center; color:#777;">Henüz hiç araba eklenmemiş.</p>';
+            return;
+        }
+
+        cars.forEach((car, index) => {
+            const card = document.createElement('div');
+            card.className = 'car-card';
+            card.innerHTML = `
+                <div class="car-info">
+                    <h3>${car.model} (${car.year})</h3>
+                    <p><strong>Hız:</strong> ${car.speed}</p>
+                    <p><strong>Konfor:</strong> ${car.comfort}</p>
+                </div>
+                <button class="delete-btn" onclick="deleteCar(${index})">Sil</button>
+            `;
+            carList.appendChild(card);
+        });
+    }
+
+    // Yeni araba ekleme olayı
+    carForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const newCar = {
+            model: document.getElementById('carModel').value,
+            speed: document.getElementById('carSpeed').value,
+            comfort: document.getElementById('carComfort').value,
+            year: document.getElementById('carYear').value
+        };
+
+        cars.push(newCar);
+        localStorage.setItem('savedCars', JSON.stringify(cars)); // Hafızaya kaydet
+
+        carForm.reset(); // Formu temizle
+        renderCars(); // Listeyi güncelle
+    });
+
+    // Araba silme fonksiyonu
+    function deleteCar(index) {
+        cars.splice(index, 1);
+        localStorage.setItem('savedCars', JSON.stringify(cars)); // Hafızayı güncelle
+        renderCars();
+    }
+
+    // İlk açılışta listeyi yükle
+    renderCars();
+</script>
+
 </body>
 </html>
