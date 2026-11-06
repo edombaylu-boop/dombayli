@@ -112,4 +112,231 @@
         }
 
         .res-card {
-            background: var
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .res-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #f1f2f6;
+        }
+
+        .res-content {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .res-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .res-title {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #2f3542;
+        }
+
+        .res-date {
+            font-size: 0.8rem;
+            color: #a4b0be;
+        }
+
+        /* Puan Çubukları / Yıldızlar */
+        .ratings {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .rating-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .rating-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .average-badge {
+            background: #ffa502;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .notes {
+            font-size: 0.88rem;
+            color: #57606f;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .delete-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            align-self: flex-end;
+            margin-top: 10px;
+        }
+
+        .delete-btn:hover {
+            background: #ee5253;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Lezzet & Anı Günlüğümüz 🍕❤️</h1>
+        <p>Birlikte keşfettiğimiz mekânlar ve puanlarımız</p>
+    </header>
+
+    <!-- Mekan Ekleme Formu -->
+    <div class="form-card">
+        <h2>Yeni Bir Mekân Ekle</h2>
+        <form id="resForm">
+            <div class="form-grid">
+                <div>
+                    <label>Mekân Adı:</label>
+                    <input type="text" id="name" placeholder="Örn: Kebapçı İskender" required>
+                </div>
+                <div>
+                    <label>Gittiğimiz Tarih:</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div>
+                    <label>Yemek Puanı (1-10):</label>
+                    <input type="number" id="foodRating" min="1" max="10" placeholder="10" required>
+                </div>
+                <div>
+                    <label>Servis Puanı (1-10):</label>
+                    <input type="number" id="serviceRating" min="1" max="10" placeholder="10" required>
+                </div>
+                <div>
+                    <label>Ortam / Atmosfer Puanı (1-10):</label>
+                    <input type="number" id="ambianceRating" min="1" max="10" placeholder="10" required>
+                </div>
+                <div>
+                    <label>Fotoğraf Linki (URL):</label>
+                    <input type="url" id="image" placeholder="https://... (boş bırakabilirsiniz)">
+                </div>
+                <div class="full-width">
+                    <label>Özel Notlarımız / Favori Yemeğimiz:</label>
+                    <textarea id="notes" placeholder="Örn: Mantısı harikaydı, bahçede oturduk..."></textarea>
+                </div>
+                <div class="full-width">
+                    <button type="submit" class="add-btn">Mekânı Günlüğe Kaydet 📌</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Eklenen Restoranlar -->
+    <div id="restaurantList" class="restaurant-grid"></div>
+</div>
+
+<script>
+    let restaurants = JSON.parse(localStorage.getItem('ourRestaurants')) || [];
+
+    const resForm = document.getElementById('resForm');
+    const restaurantList = document.getElementById('restaurantList');
+
+    // Varsayılan Görsel
+    const defaultImg = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=80";
+
+    function renderRestaurants() {
+        restaurantList.innerHTML = '';
+
+        if (restaurants.length === 0) {
+            restaurantList.innerHTML = '<p style="grid-column: span 3; text-align:center; color:#a4b0be;">Henüz bir mekân eklemediniz. Yukarıdaki formdan ilk anınızı ekleyin!</p>';
+            return;
+        }
+
+        restaurants.forEach((res, index) => {
+            const avg = ((parseFloat(res.food) + parseFloat(res.service) + parseFloat(res.ambiance)) / 3).toFixed(1);
+            
+            const card = document.createElement('div');
+            card.className = 'res-card';
+            card.innerHTML = `
+                <img src="${res.image || defaultImg}" class="res-image" alt="${res.name}" onerror="this.src='${defaultImg}'">
+                <div class="res-content">
+                    <div>
+                        <div class="res-header">
+                            <h3 class="res-title">${res.name}</h3>
+                            <span class="average-badge">★ ${avg}</span>
+                        </div>
+                        <div class="res-date">📅 ${res.date}</div>
+                        
+                        <div class="ratings">
+                            <div class="rating-row"><span>🍕 Yemek:</span> <strong>${res.food}/10</strong></div>
+                            <div class="rating-row"><span>🛎️ Servis:</span> <strong>${res.service}/10</strong></div>
+                            <div class="rating-row"><span>✨ Ortam:</span> <strong>${res.ambiance}/10</strong></div>
+                        </div>
+
+                        ${res.notes ? `<div class="notes">"${res.notes}"</div>` : ''}
+                    </div>
+                    <button class="delete-btn" onclick="deleteRestaurant(${index})">Sil</button>
+                </div>
+            `;
+            restaurantList.appendChild(card);
+        });
+    }
+
+    resForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const newRes = {
+            name: document.getElementById('name').value,
+            date: document.getElementById('date').value,
+            food: document.getElementById('foodRating').value,
+            service: document.getElementById('serviceRating').value,
+            ambiance: document.getElementById('ambianceRating').value,
+            image: document.getElementById('image').value,
+            notes: document.getElementById('notes').value
+        };
+
+        restaurants.unshift(newRes); // En yeni eklenen en üstte görünsün
+        localStorage.setItem('ourRestaurants', JSON.stringify(restaurants));
+
+        resForm.reset();
+        renderRestaurants();
+    });
+
+    function deleteRestaurant(index) {
+        if(confirm("Bu mekanı silmek istediğinize emin misiniz?")) {
+            restaurants.splice(index, 1);
+            localStorage.setItem('ourRestaurants', JSON.stringify(restaurants));
+            renderRestaurants();
+        }
+    }
+
+    // Başlangıçta tarihi bugün yap
+    document.getElementById('date').valueAsDate = new Date();
+    renderRestaurants();
+</script>
+
+</body>
+</html>
