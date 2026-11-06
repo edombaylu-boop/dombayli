@@ -3,163 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Araba Değerlendirme Sitesi</title>
+    <title>Lezzet & Anı Günlüğümüz 🍕❤️</title>
     <style>
+        :root {
+            --primary: #ff4757;
+            --bg: #fff5f5;
+            --card-bg: #ffffff;
+            --text: #2f3542;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
             padding: 20px;
         }
+
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        h1, h2 {
-            color: #333;
+
+        header {
             text-align: center;
+            margin-bottom: 30px;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background: #eef2f7;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+
+        header h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 5px;
         }
-        input, button {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+
+        header p {
+            color: #747d8c;
+            font-style: italic;
         }
-        button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
+
+        /* Form Stilleri */
+        .form-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.1);
+            margin-bottom: 35px;
         }
-        button:hover {
-            background-color: #218838;
+
+        .form-card h2 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.4rem;
         }
-        .car-list {
+
+        .form-grid {
             display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
-        .car-card {
-            background: #fff;
-            border: 1px solid #ddd;
-            padding: 15px;
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dfe4ea;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .car-info h3 {
-            margin: 0 0 5px 0;
-            color: #007bff;
-        }
-        .car-info p {
-            margin: 3px 0;
-            color: #555;
-        }
-        .delete-btn {
-            background-color: #dc3545;
-            padding: 8: 12px;
-            font-size: 14px;
-        }
-        .delete-btn:hover {
-            background-color: #c82333;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>Araba Takip ve Değerlendirme</h1>
-
-    <!-- Araba Ekleme Formu -->
-    <form id="carForm">
-        <h2>Yeni Araba Ekle</h2>
-        <input type="text" id="carModel" placeholder="Araba Modeli (Örn: BMW M4)" required>
-        <input type="text" id="carSpeed" placeholder="Hız / Beygir (Örn: 300 km/s - 500 HP)" required>
-        <input type="text" id="carComfort" placeholder="Konfor Puanı / Özelliği (Örn: 9/10 - Deri Koltuk)" required>
-        <input type="number" id="carYear" placeholder="Üretim Yılı (Örn: 2024)" required>
-        <button type="submit">Aracı Listeye Ekle</button>
-    </form>
-
-    <!-- Kayıtlı Arabalar Listesi -->
-    <h2>Eklenen Arabalar</h2>
-    <div id="carList" class="car-list">
-        <!-- JavaScript buraya otomatik araba kartları ekleyecek -->
-    </div>
-</div>
-
-<script>
-    // Sayfa açıldığında hafızadaki kayıtlı arabaları al
-    let cars = JSON.parse(localStorage.getItem('savedCars')) || [];
-
-    const carForm = document.getElementById('carForm');
-    const carList = document.getElementById('carList');
-
-    // Listeyi ekrana yazdıran fonksiyon
-    function renderCars() {
-        carList.innerHTML = '';
-        if (cars.length === 0) {
-            carList.innerHTML = '<p style="text-align:center; color:#777;">Henüz hiç araba eklenmemiş.</p>';
-            return;
+            box-sizing: border-box;
+            font-size: 0.95rem;
         }
 
-        cars.forEach((car, index) => {
-            const card = document.createElement('div');
-            card.className = 'car-card';
-            card.innerHTML = `
-                <div class="car-info">
-                    <h3>${car.model} (${car.year})</h3>
-                    <p><strong>Hız:</strong> ${car.speed}</p>
-                    <p><strong>Konfor:</strong> ${car.comfort}</p>
-                </div>
-                <button class="delete-btn" onclick="deleteCar(${index})">Sil</button>
-            `;
-            carList.appendChild(card);
-        });
-    }
+        textarea {
+            resize: vertical;
+            height: 70px;
+        }
 
-    // Yeni araba ekleme olayı
-    carForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+        button.add-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
 
-        const newCar = {
-            model: document.getElementById('carModel').value,
-            speed: document.getElementById('carSpeed').value,
-            comfort: document.getElementById('carComfort').value,
-            year: document.getElementById('carYear').value
-        };
+        button.add-btn:hover {
+            background: #e84118;
+        }
 
-        cars.push(newCar);
-        localStorage.setItem('savedCars', JSON.stringify(cars)); // Hafızaya kaydet
+        /* Restoran Kartları Grid */
+        .restaurant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
 
-        carForm.reset(); // Formu temizle
-        renderCars(); // Listeyi güncelle
-    });
-
-    // Araba silme fonksiyonu
-    function deleteCar(index) {
-        cars.splice(index, 1);
-        localStorage.setItem('savedCars', JSON.stringify(cars)); // Hafızayı güncelle
-        renderCars();
-    }
-
-    // İlk açılışta listeyi yükle
-    renderCars();
-</script>
-
-</body>
-</html>
+        .res-card {
+            background: var
