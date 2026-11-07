@@ -199,7 +199,8 @@
     async function loadData() {
         const listElement = document.getElementById('restaurantList');
         try {
-            const response = await fetch(csvUrl + '&t=' + new Date().getTime());
+            // Önbelleğe (Cache) takılmasını kesin olarak engelleyen ek parametre: { cache: 'no-store' }
+            const response = await fetch(csvUrl + '&t=' + new Date().getTime(), { cache: 'no-store' });
             const dataText = await response.text();
             const rows = parseCSV(dataText);
 
@@ -238,25 +239,4 @@
                             
                             <div class="ratings">
                                 <div class="rating-row"><span>🍕 Yemek:</span> <strong>${food}/10</strong></div>
-                                <div class="rating-row"><span>🛎️ Servis:</span> <strong>${service}/10</strong></div>
-                                <div class="rating-row"><span>✨ Ortam:</span> <strong>${ambiance}/10</strong></div>
-                            </div>
-
-                            ${notes ? `<div class="notes">"${notes}"</div>` : ''}
-                        </div>
-                    </div>
-                `;
-                listElement.appendChild(card);
-            });
-
-        } catch (error) {
-            console.error('Hata:', error);
-            listElement.innerHTML = '<div class="loading-text">Veriler yüklenirken bir hata oluştu. Lütfen CSV yayın linkini kontrol edin.</div>';
-        }
-    }
-
-    loadData();
-</script>
-
-</body>
-</html>
+                                <div class="rating-row"><span>🛎️ Servis:</span> <strong>${service}/
