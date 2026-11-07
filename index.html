@@ -184,13 +184,14 @@
         });
     }
 
-    // Google Drive Linkini doğrudan resim gösterilebilir formata çevirir
+    // Google Drive Linklerini doğrudan görsel URL'sine çeviren güncellenmiş fonksiyon
     function formatDriveImageUrl(url) {
         if (!url) return '';
-        const driveRegex = /(?:id=|d\/)([a-zA-Z0-9_-]{25,})/;
-        const match = url.match(driveRegex);
-        if (match && match[1]) {
-            return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+        
+        // Google Drive ID'sini her türlü formatta yakala (id= veya d/ veya open?id=)
+        const match = url.match(/[-\w]{25,}/);
+        if (match) {
+            return `https://lh3.googleusercontent.com/d/${match[0]}`;
         }
         return url;
     }
@@ -198,7 +199,6 @@
     async function loadData() {
         const listElement = document.getElementById('restaurantList');
         try {
-            // Tarayıcı önbelleğe takılmasın diye sonuna zaman damgası ekliyoruz
             const response = await fetch(csvUrl + '&t=' + new Date().getTime());
             const dataText = await response.text();
             const rows = parseCSV(dataText);
@@ -211,8 +211,7 @@
             }
 
             rows.reverse().forEach(row => {
-                // Tablo Sütun Sıralaması:
-                // 0: Zaman Damgası, 1: Mekân Adı, 2: Tarih, 3: Yemek, 4: Servis, 5: Ortam, 6: Notlar, 7: Fotoğraf
+                // Sütun Sıralaması: 0: Timestamp, 1: Mekân, 2: Tarih, 3: Yemek, 4: Servis, 5: Ortam, 6: Notlar, 7: Fotoğraf
                 const name = row[1] || 'İsimsiz Mekân';
                 const date = row[2] || '';
                 const food = parseFloat(row[3]) || 0;
