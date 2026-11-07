@@ -162,7 +162,6 @@
     </header>
 
     <div class="action-bar">
-        <!-- Google Form Linkiniz -->
         <a href="https://forms.gle/EbfSJmB1HUbALAz59" target="_blank" class="btn-add">
             ➕ Yeni Mekân Ekle (Google Form)
         </a>
@@ -174,11 +173,9 @@
 </div>
 
 <script>
-    // Google Sheets CSV Yayın Linkiniz
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMargRjYfrIulIcjmg8kh7WrNefnO43-JIWRSA8B5-7s760006kmteRvr585jiyn9IoHHnhG6FHd_s/pub?output=csv';
     const defaultImg = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=80';
 
-    // CSV Formatını Parçalama Fonksiyonu
     function parseCSV(text) {
         const lines = text.trim().split('\n');
         return lines.slice(1).map(line => {
@@ -187,14 +184,11 @@
         });
     }
 
-    // Google Drive Linkini Doğrudan Resim Linkine Dönüştürücü Fonksiyon
+    // Google Drive Linkini doğrudan resim gösterilebilir formata çevirir
     function formatDriveImageUrl(url) {
-        if (!url) return defaultImg;
-        
-        // Eğer yüklenen dosya bir Google Drive linkiyse id'yi yakalayıp uyarla
+        if (!url) return '';
         const driveRegex = /(?:id=|d\/)([a-zA-Z0-9_-]{25,})/;
         const match = url.match(driveRegex);
-        
         if (match && match[1]) {
             return `https://drive.google.com/uc?export=view&id=${match[1]}`;
         }
@@ -204,7 +198,8 @@
     async function loadData() {
         const listElement = document.getElementById('restaurantList');
         try {
-            const response = await fetch(csvUrl);
+            // Tarayıcı önbelleğe takılmasın diye sonuna zaman damgası ekliyoruz
+            const response = await fetch(csvUrl + '&t=' + new Date().getTime());
             const dataText = await response.text();
             const rows = parseCSV(dataText);
 
@@ -215,10 +210,9 @@
                 return;
             }
 
-            // En son eklenen en üstte görünsün diye ters çeviriyoruz
             rows.reverse().forEach(row => {
-                // Sütun Eşleşmeleri: 
-                // 0: Timestamp, 1: Mekân Adı, 2: Tarih, 3: Yemek, 4: Servis, 5: Ortam, 6: Notlar, 7: Görsel Linki
+                // Tablo Sütun Sıralaması:
+                // 0: Zaman Damgası, 1: Mekân Adı, 2: Tarih, 3: Yemek, 4: Servis, 5: Ortam, 6: Notlar, 7: Fotoğraf
                 const name = row[1] || 'İsimsiz Mekân';
                 const date = row[2] || '';
                 const food = parseFloat(row[3]) || 0;
@@ -226,9 +220,8 @@
                 const ambiance = parseFloat(row[5]) || 0;
                 const notes = row[6] || '';
                 
-                // 7. Sütundaki fotoğraf bağlantısını formatlıyoruz
                 const rawImage = row[7] || '';
-                const image = formatDriveImageUrl(rawImage);
+                const image = formatDriveImageUrl(rawImage) || defaultImg;
 
                 const avg = ((food + service + ambiance) / 3).toFixed(1);
 
@@ -263,7 +256,6 @@
         }
     }
 
-    // Sayfa açıldığında verileri çek
     loadData();
 </script>
 
