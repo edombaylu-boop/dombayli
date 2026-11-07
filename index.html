@@ -176,6 +176,7 @@
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMargRjYfrIulIcjmg8kh7WrNefnO43-JIWRSA8B5-7s760006kmteRvr585jiyn9IoHHnhG6FHd_s/pub?output=csv';
     const defaultImg = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=80';
 
+    // Güvenli CSV Ayrıştırıcı
     function parseCSV(text) {
         const lines = text.trim().split('\n');
         return lines.slice(1).map(line => {
@@ -184,11 +185,9 @@
         });
     }
 
-    // Google Drive Linklerini doğrudan görsel URL'sine çeviren güncellenmiş fonksiyon
+    // Google Drive Linklerini doğrudan görsel URL'sine çeviren fonksiyon
     function formatDriveImageUrl(url) {
         if (!url) return '';
-        
-        // Google Drive ID'sini her türlü formatta yakala (id= veya d/ veya open?id=)
         const match = url.match(/[-\w]{25,}/);
         if (match) {
             return `https://lh3.googleusercontent.com/d/${match[0]}`;
@@ -199,20 +198,23 @@
     async function loadData() {
         const listElement = document.getElementById('restaurantList');
         try {
-            // Önbelleğe (Cache) takılmasını kesin olarak engelleyen ek parametre: { cache: 'no-store' }
             const response = await fetch(csvUrl + '&t=' + new Date().getTime(), { cache: 'no-store' });
+            if (!response.ok) throw new Error('Ağ yanıtı başarısız');
+            
             const dataText = await response.text();
             const rows = parseCSV(dataText);
 
             listElement.innerHTML = '';
 
-            if (rows.length === 0 || (rows.length === 1 && !rows[0][1])) {
+            // Boş satırları filtrele
+            const validRows = rows.filter(row => row && row[1] && row[1] !== '');
+
+            if (validRows.length === 0) {
                 listElement.innerHTML = '<div class="loading-text">Henüz kaydedilmiş bir mekân yok. İlk mekânı yukarıdaki butondan ekleyin!</div>';
                 return;
             }
 
-            rows.reverse().forEach(row => {
-                // Sütun Sıralaması: 0: Timestamp, 1: Mekân, 2: Tarih, 3: Yemek, 4: Servis, 5: Ortam, 6: Notlar, 7: Fotoğraf
+            validRows.reverse().forEach(row => {
                 const name = row[1] || 'İsimsiz Mekân';
                 const date = row[2] || '';
                 const food = parseFloat(row[3]) || 0;
@@ -239,4 +241,25 @@
                             
                             <div class="ratings">
                                 <div class="rating-row"><span>🍕 Yemek:</span> <strong>${food}/10</strong></div>
-                                <div class="rating-row"><span>🛎️ Servis:</span> <strong>${service}/
+                                <div class="rating-row"><span>🛎️ Servis:</span> <strong>${service}/10</strong></div>
+                                <div class="rating-row"><span>✨ Ortam:</span> <strong>${ambiance}/10</strong></div>
+                            </div>
+
+                            ${notes ? `<div class="notes">"${notes}"</div>` : ''}
+                        </div>
+                    </div>
+                `;
+                listElement.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error('Hata:', error);
+            listElement.innerHTML = '<div class="loading-text">Veriler yüklenirken bir hata oluştu. Lütfen CSV yayın linkini kontrol edin.</div>';
+        }
+    }
+
+    loadData();
+</script>
+
+</body>
+</html>
