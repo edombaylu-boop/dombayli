@@ -92,11 +92,35 @@
             transform: translateY(-4px);
         }
 
-        .res-image {
+        /* Fotoğrafın kesilmemesi ve şık durması için güncellenen alan */
+        .image-container {
             width: 100%;
-            height: 190px;
+            height: 210px;
+            position: relative;
+            background-color: #1a1a1a;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Arkadaki hafif bulanık estetik katman */
+        .res-image-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            background-color: #f1f2f6;
+            filter: blur(12px) brightness(0.7);
+            transform: scale(1.1);
+        }
+
+        /* Asıl fotoğrafın kendisi (tamamı görünür, kesilmez) */
+        .res-image {
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            z-index: 1;
         }
 
         .res-content {
@@ -200,7 +224,6 @@
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMargRjYfrIulIcjmg8kh7WrNefnO43-JIWRSA8B5-7s760006kmteRvr585jiyn9IoHHnhG6FHd_s/pub?output=csv';
     const defaultImg = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=80';
 
-    // Güvenli CSV Ayrıştırıcı
     function parseCSV(text) {
         const lines = text.trim().split('\n');
         return lines.slice(1).map(line => {
@@ -223,7 +246,6 @@
         });
     }
 
-    // Google Drive Linklerini doğrudan görsel URL'sine çeviren fonksiyon
     function formatDriveImageUrl(url) {
         if (!url) return '';
         const match = url.match(/[-\w]{25,}/);
@@ -244,7 +266,6 @@
 
             listElement.innerHTML = '';
 
-            // Boş satırları filtrele
             const validRows = rows.filter(row => row && row[1] && row[1] !== '');
 
             if (validRows.length === 0) {
@@ -268,7 +289,10 @@
                 const card = document.createElement('div');
                 card.className = 'res-card';
                 card.innerHTML = `
-                    <img src="${image}" class="res-image" alt="${name}" onerror="this.src='${defaultImg}'">
+                    <div class="image-container">
+                        <img src="${image}" class="res-image-bg" alt="" aria-hidden="true">
+                        <img src="${image}" class="res-image" alt="${name}" onerror="this.src='${defaultImg}'">
+                    </div>
                     <div class="res-content">
                         <div>
                             <div class="res-header">
