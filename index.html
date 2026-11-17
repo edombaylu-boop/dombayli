@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 1050px; /* Kartlar genişlediği için ana alanı da ferahlattık */
+            max-width: 960px;
             margin: 0 auto;
         }
 
@@ -74,9 +74,8 @@
 
         .restaurant-grid {
             display: grid;
-            /* Kart genişliğini 280px'den 340px'e çıkararak fotoğraflara yatayda alan açtık */
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 22px;
         }
 
         .res-card {
@@ -93,10 +92,9 @@
             transform: translateY(-4px);
         }
 
-        /* Yatayda daha geniş alan ve kusursuz blur arka plan */
         .image-container {
             width: 100%;
-            height: 200px;
+            height: 235px;
             position: relative;
             background-color: #1e1e1e;
             overflow: hidden;
@@ -105,7 +103,6 @@
             justify-content: center;
         }
 
-        /* Güçlendirilmiş ve yumuşatılmış estetik blur katmanı */
         .res-image-bg {
             position: absolute;
             width: 100%;
@@ -115,14 +112,13 @@
             transform: scale(1.15);
         }
 
-        /* Asıl fotoğrafın kendisi (kenarları kesilmez, tamamı görünür) */
         .res-image {
             position: relative;
             width: 100%;
             height: 100%;
             object-fit: contain;
             z-index: 1;
-            drop-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
         }
 
         .res-content {
